@@ -38,7 +38,6 @@ export class DXF {
         let result = document.createElement("canvas");
         result.setAttribute("width", "" + width);
         result.setAttribute("height", "" + height);
-        result.setAttribute("style", "border: 1px solid black;");
         let ctx = result.getContext("2d");
         ctx.beginPath();
         ctx.moveTo(0, 0);
@@ -61,7 +60,7 @@ class DXFLine {
     constructor(public x1: number, public y1: number, public x2: number, public y2: number) {}
 }
 
-class DXFModule {
+export class DXFModule {
     public lines: Array<DXFLine>;
     public minX: number;
     public minY: number;
