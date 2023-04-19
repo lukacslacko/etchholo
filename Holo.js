@@ -9,6 +9,7 @@ function arc(img, x, y, r, start_degrees, end_degrees, pieces) {
         let y1 = y + r * Math.sin(start / 180 * Math.PI);
         let x2 = x + r * Math.cos(end / 180 * Math.PI);
         let y2 = y + r * Math.sin(end / 180 * Math.PI);
+        console.log("line ", x1, y1, x2, y2);
         img.line(x1, y1, x2, y2);
     }
 }
@@ -60,23 +61,29 @@ class Cube {
         line3d(img, p4, p8, pieces);
     }
 }
-function point3d(img, p, pieces) {
+function point3d(img, p, span, pieces) {
     let r = p.z;
-    arc(img, p.x, p.y, r, -135, -45, pieces);
+    arc(img, p.x, p.y, r, -90 - span, -90 + span, pieces);
 }
-function line3d(img, p1, p2, pieces) {
+function line3d(img, p1, p2, pieces, arc_span = 30, arc_pieces = 60) {
     for (let i = 0; i < pieces; i++) {
         let x = p1.x + i * (p2.x - p1.x) / pieces;
         let y = p1.y + i * (p2.y - p1.y) / pieces;
         let z = p1.z + i * (p2.z - p1.z) / pieces;
-        point3d(img, new Point3d(x, y, z), pieces);
+        point3d(img, new Point3d(x, y, z), arc_span, arc_pieces);
+    }
+}
+function circle(img, x, y, r, z, pieces, arc_span, arc_pieces) {
+    for (let a = 0; a < 360; a += 360 / pieces) {
+        point3d(img, new Point3d(x + r * Math.cos(a / 180 * Math.PI), y + r * Math.sin(a / 180 * Math.PI), z), arc_span, arc_pieces);
     }
 }
 let img = new DXFModule();
-let cube = new Cube(0, 0, 120, 100);
-cube.draw(img, 45, 30, 10);
+// let cube = new Cube(0, 0, 120, 100);
+// cube.draw(img, 45, 30, 10);
+circle(img, 200, 200, 20, 80, 45, 30, 30);
 let dxf = new DXF();
-dxf.add(img.shift(300, 300));
+dxf.add(img);
 let holo = document.getElementById("holo");
 holo.appendChild(dxf.previewCanvas(600, 600));
 // line break
